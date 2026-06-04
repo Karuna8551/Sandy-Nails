@@ -4,509 +4,636 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sandy Nails – Custom Nail Artistry</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blush: #f5d6cc;
-      --rose: #e8a898;
-      --deep: #c4706a;
-      --nude: #f9ede8;
-      --cream: #fdf6f2;
-      --warm-dark: #2a1a18;
+      --blush: #f7d6cc;
+      --rose:  #e8a898;
+      --deep:  #c4706a;
+      --deeper:#9e4f49;
+      --nude:  #fbeee9;
+      --cream: #fdf7f4;
+      --dark:  #1e0f0d;
       --muted: #8a6460;
-      --gold: #c9a87c;
-      --white: #ffffff;
+      --gold:  #c9a87c;
+      --gold2: #e2c99a;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
-      color: var(--warm-dark);
-      overflow-x: hidden;
-    }
+    /* ── CURSOR ── */
+    .cursor-dot  { position:fixed;z-index:9999;width:10px;height:10px;background:var(--deep);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .08s,background .2s; }
+    .cursor-ring { position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid rgba(196,112,106,.6);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .18s ease,width .2s,height .2s,border-color .2s; }
 
-    /* ─── HERO ─── */
+    /* ── HERO ── */
     .hero {
       min-height: 100vh;
-      background: linear-gradient(135deg, #fce8e2 0%, #f7d5cb 40%, #edddd8 100%);
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 2rem;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden; padding: 2rem;
     }
 
-    /* Decorative circles */
-    .hero::before {
-      content: '';
-      position: absolute;
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,112,106,0.15) 0%, transparent 70%);
-      top: -150px; right: -150px;
+    /* Sister photo — full bleed */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-size: cover;
+      background-position: center top;
+      animation: bgZoom 18s ease-in-out infinite alternate;
+    }
+    @keyframes bgZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.12); }
+    }
+
+    /* Transparent overlay — lets sister face show through subtly */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        linear-gradient(to bottom,
+          rgba(253,247,244,0.72) 0%,
+          rgba(247,214,204,0.45) 30%,
+          rgba(196,112,106,0.22) 60%,
+          rgba(30,15,13,0.80) 100%
+        );
+    }
+    /* Grain */
+    .hero-grain {
+      position: absolute; inset: 0; z-index: 2; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       pointer-events: none;
     }
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 400px; height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,168,124,0.15) 0%, transparent 70%);
-      bottom: -80px; left: -80px;
+
+    /* ── FALLING NAILS CANVAS ── */
+    #fallingCanvas {
+      position: absolute; inset: 0; z-index: 3;
       pointer-events: none;
     }
 
-    /* Floating nail shapes */
-    .nail-float {
-      position: absolute;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      opacity: 0.18;
-      animation: float 6s ease-in-out infinite;
-      pointer-events: none;
+    .hero-content {
+      position: relative; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center; gap: 1.2rem;
     }
-    .nail-float:nth-child(1) { width:40px; height:52px; background:var(--deep); top:12%; left:8%; animation-delay:0s; }
-    .nail-float:nth-child(2) { width:32px; height:44px; background:var(--gold); top:25%; right:10%; animation-delay:1.2s; }
-    .nail-float:nth-child(3) { width:28px; height:38px; background:var(--rose); bottom:30%; left:6%; animation-delay:2.4s; }
-    .nail-float:nth-child(4) { width:36px; height:48px; background:var(--deep); bottom:18%; right:8%; animation-delay:0.8s; }
-    .nail-float:nth-child(5) { width:24px; height:34px; background:var(--gold); top:60%; left:15%; animation-delay:3s; }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0) rotate(-5deg); }
-      50%      { transform: translateY(-18px) rotate(5deg); }
-    }
-
-    .logo-badge {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      font-weight: 400;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(8px);
-      padding: 0.45rem 1.2rem;
-      border-radius: 2rem;
-      border: 1px solid rgba(196,112,106,0.2);
-      margin-bottom: 2rem;
-      animation: fadeDown 0.8s ease both;
-    }
-
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.5rem, 10vw, 7rem);
-      font-weight: 300;
-      line-height: 0.95;
-      text-align: center;
-      color: var(--warm-dark);
-      animation: fadeDown 0.9s 0.1s ease both;
-    }
-    h1 em {
-      font-style: italic;
-      color: var(--deep);
-    }
-
-    .hero-sub {
-      margin-top: 1.4rem;
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      font-weight: 300;
-      color: var(--muted);
-      text-align: center;
-      letter-spacing: 0.04em;
-      max-width: 400px;
-      line-height: 1.7;
-      animation: fadeDown 1s 0.2s ease both;
-    }
-
-    .hero-cta {
-      margin-top: 2.5rem;
-      display: inline-block;
-      padding: 0.9rem 2.4rem;
-      background: var(--deep);
-      color: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 3rem;
-      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-      box-shadow: 0 6px 20px rgba(196,112,106,0.35);
-      animation: fadeDown 1s 0.3s ease both;
-    }
-    .hero-cta:hover {
-      background: var(--warm-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(42,26,24,0.25);
-    }
-
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── FEATURES STRIP ─── */
-    .features {
-      background: var(--warm-dark);
-      padding: 2.2rem 1rem;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 2.5rem 4rem;
-    }
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: var(--blush);
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 400;
-    }
-    .feature-icon { font-size: 1.2rem; }
-
-    /* ─── ABOUT ─── */
-    .about {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 6rem 2rem;
-      text-align: center;
-    }
-    .section-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .68rem; letter-spacing: .42em; text-transform: uppercase; font-weight: 500;
       color: var(--gold);
-      font-weight: 500;
-      margin-bottom: 1.2rem;
+      background: rgba(253,247,244,.72); backdrop-filter: blur(12px) saturate(1.5);
+      border: 1px solid rgba(201,168,124,.3);
+      padding: .5rem 1.4rem; border-radius: 2rem;
+      animation: riseIn 1s .1s both;
     }
-    .about h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 300;
-      line-height: 1.2;
-      color: var(--warm-dark);
-      margin-bottom: 1.4rem;
+    .hero-badge::before,.hero-badge::after { content:'✦'; font-size:.55rem; }
+    .hero h1 {
+      font-family:'Playfair Display',serif;
+      font-size: clamp(4.5rem,14vw,9rem);
+      font-weight: 300; line-height: .88; letter-spacing: -.01em; color: var(--dark);
+      animation: riseIn 1s .25s both;
+      text-shadow: 0 4px 40px rgba(253,247,244,.6);
     }
-    .about h2 em { font-style: italic; color: var(--deep); }
-    .about p {
-      color: var(--muted);
-      font-size: 0.98rem;
-      line-height: 1.85;
-      font-weight: 300;
+    .hero h1 em { font-style:italic; color: var(--deep); display:block; }
+    .hero-tagline {
+      font-size: clamp(.88rem,2vw,1rem); font-weight: 300; color: var(--muted);
+      letter-spacing: .06em; max-width: 420px; line-height: 1.8;
+      animation: riseIn 1s .4s both;
     }
+    .hero-cta-row { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; animation: riseIn 1s .55s both; }
+    .btn-primary {
+      padding:.9rem 2.5rem; background:var(--deep); color:#fff;
+      font-family:'Jost',sans-serif; font-size:.8rem; font-weight:500;
+      letter-spacing:.16em; text-transform:uppercase; text-decoration:none;
+      border:none; cursor:pointer; border-radius:3rem;
+      box-shadow:0 8px 28px rgba(196,112,106,.45); transition:all .3s;
+    }
+    .btn-primary:hover { background:var(--deeper); transform:translateY(-3px); box-shadow:0 14px 36px rgba(196,112,106,.5); }
+    .btn-outline {
+      padding:.9rem 2.2rem; background:rgba(255,255,255,.5);
+      backdrop-filter:blur(8px); color:var(--dark);
+      font-family:'Jost',sans-serif; font-size:.8rem; font-weight:500;
+      letter-spacing:.16em; text-transform:uppercase; text-decoration:none;
+      border:1.5px solid rgba(196,112,106,.35); border-radius:3rem; cursor:pointer; transition:all .3s;
+    }
+    .btn-outline:hover { background:rgba(255,255,255,.8); transform:translateY(-3px); }
 
-    /* ─── SERVICES ─── */
-    .services {
-      background: linear-gradient(180deg, #fdf0ec 0%, var(--cream) 100%);
-      padding: 5rem 2rem;
+    .scroll-hint {
+      position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:.5rem; z-index:10;
+      animation:riseIn 1s 1s both; color:var(--muted); font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
     }
-    .services-inner { max-width: 1000px; margin: 0 auto; }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .service-card {
-      background: #fff;
-      border-radius: 1.5rem;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      border: 1px solid rgba(196,112,106,0.12);
-      box-shadow: 0 2px 20px rgba(42,26,24,0.05);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 32px rgba(196,112,106,0.15);
-    }
-    .service-emoji { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
-    .service-card h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-weight: 400;
-      color: var(--warm-dark);
-      margin-bottom: 0.5rem;
-    }
-    .service-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+    .scroll-line { width:1px; height:48px; background:linear-gradient(to bottom,var(--deep),transparent); animation:scrollPulse 2s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%,100%{transform:scaleY(1);opacity:.6;} 50%{transform:scaleY(1.3);opacity:1;} }
 
-    /* ─── ORDER FORM ─── */
-    .order-section {
-      padding: 6rem 2rem;
-      background: var(--cream);
-      position: relative;
-    }
-    .order-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23e8a898' fill-opacity='0.25'/%3E%3C/svg%3E") repeat;
-      pointer-events: none;
-    }
+    /* ── RIBBON ── */
+    .ribbon { background:var(--dark); height:52px; display:flex; align-items:center; overflow:hidden; }
+    .ribbon-track { display:flex; gap:0; white-space:nowrap; animation:ribbonScroll 28s linear infinite; }
+    @keyframes ribbonScroll { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+    .ribbon-item { display:inline-flex; align-items:center; gap:.9rem; padding:0 2.5rem; font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:var(--blush); font-weight:400; }
+    .ribbon-dot { color:var(--gold); font-size:.55rem; }
 
-    .order-inner {
-      max-width: 560px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
+    /* ── ABOUT SPLIT ── */
+    .about-split { display:grid; grid-template-columns:1fr 1fr; max-width:1100px; margin:0 auto; padding:7rem 2rem; gap:5rem; align-items:center; }
+    @media(max-width:768px){.about-split{grid-template-columns:1fr;gap:3rem;padding:4rem 1.5rem;}}
+    .about-visual { position:relative; }
+    .about-img-frame {
+      width:100%; aspect-ratio:3/4; border-radius:40% 60% 60% 40%/50% 50% 50% 50%;
+      overflow:hidden; background:linear-gradient(135deg,var(--blush),var(--rose));
+      box-shadow:0 30px 70px rgba(196,112,106,.25); position:relative;
     }
-    .order-inner .section-label,
-    .order-inner h2 {
-      text-align: center;
+    .about-img-frame img { width:100%; height:100%; object-fit:cover; opacity:.92; }
+    .nail-cluster { position:absolute; bottom:-2rem; right:-2rem; width:160px; height:160px; display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .nail-thumb { border-radius:1rem; overflow:hidden; box-shadow:0 8px 22px rgba(42,26,24,.2); }
+    .nail-thumb img { width:100%; height:100%; object-fit:cover; }
+    .nail-thumb:nth-child(1){background:linear-gradient(135deg,#f7c5c0,#e8a898);}
+    .nail-thumb:nth-child(2){background:linear-gradient(135deg,#c9a87c,#e2d0b5);}
+    .nail-thumb:nth-child(3){background:linear-gradient(135deg,#c4706a,#b55c56);}
+    .nail-thumb:nth-child(4){background:linear-gradient(135deg,#2a1a18,#8a6460);}
+    .about-gold-ring {
+      position:absolute; top:-1.5rem; left:-1.5rem; width:80px; height:80px;
+      border-radius:50%; border:1.5px solid rgba(201,168,124,.5);
+      animation:spinRing 12s linear infinite;
     }
-    .order-inner h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 300;
-      line-height: 1.2;
-      color: var(--warm-dark);
-      margin-bottom: 0.6rem;
-    }
-    .order-inner h2 em { font-style: italic; color: var(--deep); }
-    .order-sub {
-      text-align: center;
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-bottom: 2.8rem;
-      line-height: 1.7;
-    }
+    .about-gold-ring::after { content:'✦'; position:absolute; top:-10px; left:50%; transform:translateX(-50%); color:var(--gold); font-size:.7rem; background:var(--cream); padding:2px 4px; }
+    @keyframes spinRing{to{transform:rotate(360deg);}}
+    .about-text .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.2rem;display:block;}
+    .about-text h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.15;color:var(--dark);margin-bottom:1.6rem;}
+    .about-text h2 em{font-style:italic;color:var(--deep);}
+    .about-text p{font-size:.95rem;line-height:1.9;color:var(--muted);font-weight:300;margin-bottom:1rem;}
+    .stats-row{display:flex;gap:2.5rem;margin-top:2.2rem;flex-wrap:wrap;}
+    .stat-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--deep);line-height:1;}
+    .stat-label{font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem;}
 
-    .form-card {
-      background: #fff;
-      border-radius: 2rem;
-      padding: 3rem 2.5rem;
-      box-shadow: 0 8px 48px rgba(42,26,24,0.09);
-      border: 1px solid rgba(196,112,106,0.1);
-    }
+    /* ── GALLERY STRIP ── */
+    .gallery-strip{padding:0 2rem 5rem;overflow:hidden;}
+    .gallery-track{display:flex;gap:1.2rem;animation:galleryScroll 30s linear infinite;width:max-content;}
+    .gallery-track:hover{animation-play-state:paused;}
+    @keyframes galleryScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    .gallery-card{width:200px;height:260px;border-radius:2rem;overflow:hidden;flex-shrink:0;position:relative;box-shadow:0 8px 28px rgba(42,26,24,.12);transition:transform .4s,box-shadow .4s;cursor:pointer;}
+    .gallery-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 22px 50px rgba(196,112,106,.3);}
+    .gallery-card img{width:100%;height:100%;object-fit:cover;}
+    .gc1{background:linear-gradient(145deg,#f9d5ce,#e8a898);}
+    .gc2{background:linear-gradient(145deg,#c4706a,#9e4f49);}
+    .gc3{background:linear-gradient(145deg,#c9a87c,#f0dfc2);}
+    .gc4{background:linear-gradient(145deg,#2a1a18,#6b3f3c);}
+    .gc5{background:linear-gradient(145deg,#f7e0d9,#c9a87c);}
+    .gc6{background:linear-gradient(145deg,#e8a898,#c4706a);}
+    .gallery-card-label{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 1rem 1rem;background:linear-gradient(to top,rgba(30,15,13,.75),transparent);color:#fff;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:400;}
+    .gallery-nail-icon{font-size:3.5rem;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));}
 
-    .form-group {
-      margin-bottom: 1.6rem;
-    }
-    .form-group label {
-      display: block;
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 500;
-      margin-bottom: 0.55rem;
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.85rem 1.1rem;
-      border: 1.5px solid rgba(196,112,106,0.25);
-      border-radius: 0.9rem;
-      background: var(--nude);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--warm-dark);
-      outline: none;
-      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-    }
-    .form-group textarea { resize: vertical; min-height: 100px; }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: var(--deep);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(196,112,106,0.12);
-    }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: #c4a8a4; }
+    /* ── SERVICES ── */
+    .services{background:linear-gradient(160deg,var(--dark) 0%,#2e1614 100%);padding:7rem 2rem;position:relative;overflow:hidden;}
+    .services::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(196,112,106,.12),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(201,168,124,.08),transparent 60%);}
+    .services-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+    .section-header{text-align:center;margin-bottom:4rem;}
+    .section-header .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:1rem;}
+    .section-header h2{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:300;line-height:1.1;color:var(--blush);}
+    .section-header h2 em{font-style:italic;color:var(--rose);}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;}
+    .svc-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1.8rem;padding:2.4rem 2rem;transition:background .4s,transform .4s,border-color .3s;backdrop-filter:blur(10px);}
+    .svc-card:hover{background:rgba(196,112,106,.12);border-color:rgba(196,112,106,.3);transform:translateY(-8px);}
+    .svc-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:1.4rem;background:rgba(196,112,106,.15);}
+    .svc-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:400;color:var(--blush);margin-bottom:.65rem;}
+    .svc-card p{font-size:.83rem;color:rgba(247,214,204,.6);line-height:1.7;font-weight:300;}
+    .svc-card .svc-price{margin-top:1.2rem;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:500;}
 
-    .submit-btn {
-      width: 100%;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, var(--deep) 0%, #b55c56 100%);
-      color: #fff;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 0.9rem;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.65rem;
-      transition: transform 0.2s, box-shadow 0.3s, filter 0.2s;
-      box-shadow: 0 6px 22px rgba(196,112,106,0.4);
-    }
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(196,112,106,0.5);
-      filter: brightness(1.05);
-    }
-    .submit-btn:active { transform: translateY(0); }
-    .wa-icon { font-size: 1.1rem; }
+    /* ── ORDER FORM ── */
+    .order-section{padding:8rem 2rem;background:var(--cream);position:relative;overflow:hidden;}
+    .order-section::before{content:'';position:absolute;border-radius:50%;pointer-events:none;width:600px;height:600px;background:radial-gradient(circle,rgba(196,112,106,.1),transparent 70%);top:-100px;left:-200px;}
+    .order-section::after{content:'';position:absolute;border-radius:50%;pointer-events:none;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,124,.12),transparent 70%);bottom:-80px;right:-100px;}
+    .order-inner{max-width:660px;margin:0 auto;position:relative;z-index:2;}
+    .order-head{text-align:center;margin-bottom:3rem;}
+    .order-head .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:1rem;}
+    .order-head h2{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,3.8rem);font-weight:300;line-height:1.1;color:var(--dark);margin-bottom:.8rem;}
+    .order-head h2 em{font-style:italic;color:var(--deep);}
+    .order-head p{font-size:.9rem;color:var(--muted);line-height:1.7;font-weight:300;}
+    .form-glass{background:rgba(255,255,255,.78);backdrop-filter:blur(24px) saturate(1.8);border:1px solid rgba(196,112,106,.18);border-radius:2.5rem;padding:3.5rem 3rem;box-shadow:0 2px 0 rgba(255,255,255,.9) inset,0 24px 64px rgba(42,26,24,.1),0 4px 16px rgba(196,112,106,.08);animation:formFloat 5s ease-in-out infinite;}
+    @keyframes formFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+    @media(max-width:600px){.form-glass{padding:2.5rem 1.5rem;}}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+    @media(max-width:520px){.form-row{grid-template-columns:1fr;}}
+    .fg{margin-bottom:1.5rem;position:relative;}
+    .fg label{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.55rem;}
+    .fg input,.fg textarea,.fg select{width:100%;padding:.9rem 1.2rem;border:1.5px solid rgba(196,112,106,.2);border-radius:1rem;background:rgba(253,247,244,.8);font-family:'Jost',sans-serif;font-size:.93rem;font-weight:300;color:var(--dark);outline:none;transition:all .25s;}
+    .fg textarea{resize:vertical;min-height:95px;}
+    .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--deep);background:#fff;box-shadow:0 0 0 4px rgba(196,112,106,.1);}
+    .fg input::placeholder,.fg textarea::placeholder{color:#c4a8a4;}
+    .fg .input-icon{position:absolute;right:1rem;top:2.4rem;color:var(--rose);font-size:1rem;pointer-events:none;}
+    .nail-style-picker{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;}
+    .style-pill{padding:.45rem 1.1rem;border:1.5px solid rgba(196,112,106,.25);border-radius:2rem;font-size:.78rem;cursor:pointer;color:var(--muted);background:transparent;font-family:'Jost',sans-serif;transition:all .2s;}
+    .style-pill.active,.style-pill:hover{background:var(--deep);color:#fff;border-color:var(--deep);box-shadow:0 4px 12px rgba(196,112,106,.35);}
+    .wa-btn{width:100%;padding:1.1rem 2rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-family:'Jost',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border:none;border-radius:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.8rem;box-shadow:0 8px 28px rgba(37,211,102,.35);transition:all .3s;margin-top:.5rem;}
+    .wa-btn:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(37,211,102,.45);filter:brightness(1.05);}
+    .wa-btn .wa-i{font-size:1.3rem;}
+    .form-note{margin-top:1.2rem;text-align:center;font-size:.78rem;color:var(--muted);line-height:1.6;}
+    .form-note strong{color:var(--deep);}
+    .form-steps{display:flex;justify-content:center;gap:.6rem;margin-bottom:2rem;}
+    .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(196,112,106,.2);transition:all .3s;}
+    .step-dot.active{background:var(--deep);width:28px;border-radius:4px;}
 
-    .form-note {
-      margin-top: 1.2rem;
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .form-note span { color: var(--deep); font-weight: 500; }
+    /* ── TESTIMONIALS ── */
+    .testimonials{padding:6rem 2rem;background:linear-gradient(180deg,var(--cream),#fdf0eb);}
+    .testimonials-inner{max-width:1000px;margin:0 auto;}
+    .testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:3.5rem;}
+    .testi-card{background:#fff;border:1px solid rgba(196,112,106,.1);border-radius:1.8rem;padding:2rem 1.8rem;box-shadow:0 4px 20px rgba(42,26,24,.06);transition:transform .3s,box-shadow .3s;}
+    .testi-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(196,112,106,.15);}
+    .stars{color:var(--gold);font-size:.9rem;margin-bottom:1rem;letter-spacing:.1em;}
+    .testi-card blockquote{font-size:.9rem;line-height:1.8;color:var(--muted);font-weight:300;font-style:italic;margin-bottom:1.4rem;}
+    .testi-name{font-size:.78rem;color:var(--deep);font-weight:500;letter-spacing:.1em;text-transform:uppercase;}
 
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--warm-dark);
-      color: var(--blush);
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-    footer .footer-brand {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      color: var(--blush);
-      margin-bottom: 0.5rem;
-    }
-    footer p { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+    /* ── FOOTER ── */
+    footer{background:var(--dark);padding:5rem 2rem 3rem;position:relative;overflow:hidden;}
+    footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:70%;height:1px;background:linear-gradient(to right,transparent,rgba(196,112,106,.4),transparent);}
+    .footer-inner{max-width:800px;margin:0 auto;text-align:center;}
+    .footer-brand{font-family:'Playfair Display',serif;font-size:3rem;font-weight:300;letter-spacing:.08em;color:var(--blush);line-height:1;}
+    .footer-brand em{font-style:italic;color:var(--rose);}
+    .footer-tagline{font-size:.78rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:.5rem;margin-bottom:2.5rem;}
+    .footer-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+    .footer-links a{font-size:.78rem;color:rgba(247,214,204,.5);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+    .footer-links a:hover{color:var(--rose);}
+    .footer-copy{font-size:.75rem;color:rgba(138,100,96,.5);}
 
-    /* ─── SCROLL REVEAL ─── */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* ── SCROLL REVEAL ── */
+    .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .8s ease,transform .8s ease;}
+    .reveal-left.visible{opacity:1;transform:translateX(0);}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity .8s ease,transform .8s ease;}
+    .reveal-right.visible{opacity:1;transform:translateX(0);}
+
+    @keyframes riseIn{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes shakeInput{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
   </style>
 </head>
 <body>
 
-  <!-- ── HERO ── -->
-  <section class="hero">
-    <div class="nail-float"></div>
-    <div class="nail-float"></div>
-    <div class="nail-float"></div>
-    <div class="nail-float"></div>
-    <div class="nail-float"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-    <div class="logo-badge">✦ Handcrafted Luxury Nails ✦</div>
-    <h1>Sandy<br/><em>Nails</em></h1>
-    <p class="hero-sub">Bespoke artificial nails crafted to perfection — your vision, our artistry.</p>
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="home">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+    <canvas id="fallingCanvas"></canvas>
 
+    <div class="hero-content">
+      <div class="hero-badge">Handcrafted Luxury Nails</div>
+      <h1 data-parallax="0.3">Sandy<br/><em>Nails</em></h1>
+      <p class="hero-tagline">Bespoke press-on nails crafted to perfection — your vision, our artistry.</p>
+      <div class="hero-cta-row">
+        <a href="#order" class="btn-primary">Order Your Set ✦</a>
+        <a href="#gallery" class="btn-outline">See Our Work</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
   </section>
 
-  <!-- ── FEATURES STRIP ── -->
-  <div class="features">
-    <div class="feature-item"><span class="feature-icon">💅</span> Fully Customised</div>
-    <div class="feature-item"><span class="feature-icon">✨</span> Premium Polish Finishes</div>
-    <div class="feature-item"><span class="feature-icon">📦</span> Delivered to Your Door</div>
-    <div class="feature-item"><span class="feature-icon">💬</span> WhatsApp Support</div>
-  </div>
+  <!-- ══ RIBBON ══ -->
+  <div class="ribbon"><div class="ribbon-track" id="ribbonTrack"></div></div>
 
-  <!-- ── ABOUT ── -->
-  <section class="about reveal">
-    <div class="section-label">Our Story</div>
-    <h2>Art you wear on <em>your fingertips</em></h2>
-    <p>At Sandy Nails, every set is a one-of-a-kind creation. We design and craft premium press-on nails tailored to your exact shape, length, colour palette, and decorative vision — from minimalist elegance to bold sculptural art. Simply tell us what you love, and we'll bring it to life.</p>
+  <!-- ══ ABOUT ══ -->
+  <section style="background:var(--cream);">
+    <div class="about-split">
+      <div class="about-visual reveal-left">
+        <div class="about-gold-ring"></div>
+        <div class="about-img-frame">
+          <img id="aboutSisterImg" src="" alt="Sandy — Nail Artist" />
+        </div>
+        <div class="nail-cluster">
+          <div class="nail-thumb"><img id="nt1" src="" alt="nail" /></div>
+          <div class="nail-thumb"><img id="nt2" src="" alt="nail" /></div>
+          <div class="nail-thumb"><img id="nt3" src="" alt="nail" /></div>
+          <div class="nail-thumb"><img id="nt4" src="" alt="nail" /></div>
+        </div>
+      </div>
+      <div class="about-text reveal-right">
+        <span class="tag">Our Story</span>
+        <h2>Art you wear on<br/><em>your fingertips</em></h2>
+        <p>Every set at Sandy Nails is a one-of-a-kind creation. We design and craft premium press-on nails tailored to your exact shape, length, colour palette, and decorative vision — from minimalist elegance to bold sculptural art.</p>
+        <p>Simply tell us what you love, and we'll bring it to life — delivered straight to your door.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Sets Created</div></div>
+          <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Custom Made</div></div>
+          <div class="stat"><div class="stat-num">⭐ 5.0</div><div class="stat-label">Customer Rating</div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- ── SERVICES ── -->
+  <!-- ══ GALLERY STRIP ══ -->
+  <section style="background:var(--cream);padding-top:1rem;" id="gallery">
+    <div style="text-align:center;padding:0 2rem 2.5rem;" class="reveal">
+      <span style="font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;">Our Work</span>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--dark);margin-top:.6rem;">Every set, a <em style="font-style:italic;color:var(--deep)">masterpiece</em></h2>
+    </div>
+    <div class="gallery-strip">
+      <div class="gallery-track" id="galleryTrack"></div>
+    </div>
+  </section>
+
+  <!-- ══ SERVICES ══ -->
   <section class="services">
     <div class="services-inner">
-      <div style="text-align:center">
-        <div class="section-label reveal">What We Offer</div>
-        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--warm-dark)" class="reveal">Endless <em style="font-style:italic;color:var(--deep)">possibilities</em></h2>
+      <div class="section-header reveal">
+        <span class="tag">What We Offer</span>
+        <h2>Endless <em>possibilities</em></h2>
       </div>
       <div class="services-grid">
-        <div class="service-card reveal">
-          <span class="service-emoji">🌸</span>
-          <h3>Custom Shapes</h3>
-          <p>Almond, stiletto, coffin, square, oval — you choose the silhouette.</p>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-emoji">🎨</span>
-          <h3>Colour Matching</h3>
-          <p>Any shade from nude nudes to vivid neons, matched precisely to your vision.</p>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-emoji">💎</span>
-          <h3>Embellishments</h3>
-          <p>Rhinestones, pearls, gold foils, 3D florals, and intricate hand-painted art.</p>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-emoji">✨</span>
-          <h3>Finish Options</h3>
-          <p>Glossy, matte, satin, chrome, glitter, holographic — name your finish.</p>
-        </div>
+        <div class="svc-card reveal"><div class="svc-icon">🌸</div><h3>Custom Shapes</h3><p>Almond, stiletto, coffin, square, oval — sculpted to flatter your hands perfectly.</p><div class="svc-price">Starting ₹299 / set</div></div>
+        <div class="svc-card reveal"><div class="svc-icon">🎨</div><h3>Colour Matching</h3><p>Any shade from dreamy nudes to vivid neons, matched precisely to your vision.</p><div class="svc-price">Any colour, any palette</div></div>
+        <div class="svc-card reveal"><div class="svc-icon">💎</div><h3>Embellishments</h3><p>Rhinestones, pearls, 24K gold foils, 3D florals, and hand-painted artistry.</p><div class="svc-price">Bespoke pricing</div></div>
+        <div class="svc-card reveal"><div class="svc-icon">✨</div><h3>Finish Options</h3><p>Glossy, matte, chrome, glitter, holographic, satin — every finish imaginable.</p><div class="svc-price">Included in all sets</div></div>
       </div>
     </div>
   </section>
 
-  <!-- ── ORDER FORM ── -->
+  <!-- ══ ORDER FORM ══ -->
   <section class="order-section" id="order">
     <div class="order-inner">
-      <div class="section-label reveal">Place Your Order</div>
-      <h2 class="reveal">Let's create <em>your</em><br/>perfect set</h2>
-      <p class="order-sub reveal">Fill in your details below and we'll reach out on WhatsApp to discuss your dream nails.</p>
-
-      <div class="form-card reveal">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="name" placeholder="e.g. Priya Sharma" />
+      <div class="order-head reveal">
+        <span class="tag">Place Your Order</span>
+        <h2>Let's create <em>your</em><br/>perfect set</h2>
+        <p>Fill in your details and we'll reach out on WhatsApp to discuss your dream nails.</p>
+      </div>
+      <div class="form-steps reveal">
+        <div class="step-dot active" id="sd1"></div>
+        <div class="step-dot" id="sd2"></div>
+        <div class="step-dot" id="sd3"></div>
+      </div>
+      <div class="form-glass reveal">
+        <div class="form-row">
+          <div class="fg"><label>Your Name</label><input type="text" id="name" placeholder="e.g. Priya Sharma"/><span class="input-icon">👤</span></div>
+          <div class="fg"><label>Phone Number</label><input type="tel" id="phone" placeholder="e.g. 9876543210"/><span class="input-icon">📞</span></div>
         </div>
-        <div class="form-group">
-          <label>Phone Number</label>
-          <input type="tel" id="phone" placeholder="e.g. 9876543210" />
+        <div class="fg">
+          <label>Preferred Nail Shape</label>
+          <div class="nail-style-picker" id="shapePicker">
+            <button class="style-pill active" data-val="Almond">🌙 Almond</button>
+            <button class="style-pill" data-val="Stiletto">💎 Stiletto</button>
+            <button class="style-pill" data-val="Coffin">⚰️ Coffin</button>
+            <button class="style-pill" data-val="Square">▪️ Square</button>
+            <button class="style-pill" data-val="Oval">🥚 Oval</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Delivery Address</label>
-          <textarea id="address" placeholder="Door no., Street, City, PIN code"></textarea>
+        <div class="fg">
+          <label>Preferred Finish</label>
+          <div class="nail-style-picker" id="finishPicker">
+            <button class="style-pill active" data-val="Glossy">✨ Glossy</button>
+            <button class="style-pill" data-val="Matte">🌫️ Matte</button>
+            <button class="style-pill" data-val="Chrome">🪞 Chrome</button>
+            <button class="style-pill" data-val="Glitter">🌟 Glitter</button>
+            <button class="style-pill" data-val="Holographic">🌈 Holo</button>
+          </div>
         </div>
-        <button class="submit-btn" onclick="sendToWhatsApp()">
-          <span class="wa-icon">📲</span> Send Order via WhatsApp
-        </button>
-        <p class="form-note">Clicking the button will open WhatsApp with your details pre-filled.<br/>Just hit <span>Send</span> — and we'll take it from there! 🌸</p>
+        <div class="fg"><label>Delivery Address</label><textarea id="address" placeholder="Door no., Street, City, PIN code"></textarea></div>
+        <div class="fg"><label>Design Notes (optional)</label><textarea id="notes" style="min-height:75px;" placeholder="Describe your dream design — colours, inspo, vibe..."></textarea></div>
+        <button class="wa-btn" onclick="sendToWhatsApp()"><span class="wa-i">💬</span> Send Order via WhatsApp</button>
+        <p class="form-note">Tapping the button opens WhatsApp with your details pre-filled.<br/>Just hit <strong>Send</strong> — and we'll take it from there! 🌸</p>
       </div>
     </div>
   </section>
 
-  <!-- ── FOOTER ── -->
+  <!-- ══ TESTIMONIALS ══ -->
+  <section class="testimonials">
+    <div class="testimonials-inner">
+      <div class="section-header reveal" style="text-align:left;max-width:500px;">
+        <span class="tag" style="display:block;margin-bottom:.8rem;">Happy Customers</span>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--dark);">They love their <em style="color:var(--deep);font-style:italic;">nails</em></h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card reveal"><div class="stars">★★★★★</div><blockquote>"Absolutely stunning work! The almond-shaped chrome set was exactly what I envisioned. Will never go back to salon nails!"</blockquote><div class="testi-name">— Divya M., Chennai</div></div>
+        <div class="testi-card reveal"><div class="stars">★★★★★</div><blockquote>"Sandy's attention to detail is incredible. My bridal set had tiny pearls and gold foils — everyone at the wedding asked about my nails!"</blockquote><div class="testi-name">— Keerthana R., Bangalore</div></div>
+        <div class="testi-card reveal"><div class="stars">★★★★★</div><blockquote>"Ordered coffin-shaped holographic nails and they arrived perfectly packaged. Wore them for 3 weeks without a single chip!"</blockquote><div class="testi-name">— Anjali P., Mumbai</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
   <footer>
-    <div class="footer-brand">Sandy Nails</div>
-    <p>Custom artificial nails crafted with love 💅</p>
-    <p style="margin-top:1rem;">© 2025 Sandy Nails. All rights reserved.</p>
+    <div class="footer-inner">
+      <div class="footer-brand">Sandy <em>Nails</em></div>
+      <div class="footer-tagline">Custom Artificial Nails · Crafted with Love</div>
+      <div class="footer-links">
+        <a href="#home">Home</a><a href="#gallery">Gallery</a>
+        <a href="#order">Order</a><a href="https://wa.me/917358473540">WhatsApp</a>
+      </div>
+      <div class="footer-copy">© 2025 Sandy Nails. All rights reserved. 💅</div>
+    </div>
   </footer>
 
   <script>
+    // ── Image data embedded ──
+    const SISTER_SRC = 'SISTER_PLACEHOLDER';
+    const NAIL_SRC   = 'NAIL_PLACEHOLDER';
+
+    // ── Set sister photo as hero background ──
+    const heroBg = document.getElementById('heroBg');
+    heroBg.style.backgroundImage = `url('${SISTER_SRC}')`;
+    heroBg.style.backgroundSize = 'cover';
+    heroBg.style.backgroundPosition = 'center top';
+
+    // ── About section sister photo ──
+    document.getElementById('aboutSisterImg').src = SISTER_SRC;
+
+    // ── Nail thumbnails in cluster ──
+    ['nt1','nt2','nt3','nt4'].forEach(id => {
+      document.getElementById(id).src = NAIL_SRC;
+    });
+
+    // ── Gallery cards with nail image ──
+    const galleryData = [
+      { label:'Brown Gold Branch', icon:'', cls:'gc1' },
+      { label:'Floral Stiletto',   icon:'🌸', cls:'gc2' },
+      { label:'Gold Coffin',       icon:'💛', cls:'gc3' },
+      { label:'Dark Glam',         icon:'🖤', cls:'gc4' },
+      { label:'Pearl Square',      icon:'🤍', cls:'gc5' },
+      { label:'Holo Oval',         icon:'🌈', cls:'gc6' },
+      { label:'Blush Almond',      icon:'🌷', cls:'gc1' },
+      { label:'Rhinestone Art',    icon:'💎', cls:'gc2' },
+    ];
+    const gtrack = document.getElementById('galleryTrack');
+    [...galleryData,...galleryData].forEach((d,i) => {
+      const c = document.createElement('div');
+      c.className = `gallery-card ${d.cls}`;
+      if (i % 4 === 0) {
+        // Show the real nail image for every 4th
+        const img = document.createElement('img');
+        img.src = NAIL_SRC;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        c.appendChild(img);
+      } else {
+        c.innerHTML = `<span class="gallery-nail-icon">${d.icon}</span>`;
+      }
+      c.innerHTML += `<div class="gallery-card-label">${d.label}</div>`;
+      gtrack.appendChild(c);
+    });
+
+    // ── Ribbon ──
+    const ribbonItems = ['💅 Custom Press-On Nails','✨ Premium Finishes','📦 Doorstep Delivery','💬 WhatsApp Support','🌸 Hand-Crafted Art','💎 Embellishments & Gems','🎨 Any Colour Imaginable','🌟 Made with Love'];
+    const track = document.getElementById('ribbonTrack');
+    [...ribbonItems,...ribbonItems].forEach(item => {
+      const el = document.createElement('span');
+      el.className = 'ribbon-item';
+      el.innerHTML = item + '<span class="ribbon-dot">✦</span>';
+      track.appendChild(el);
+    });
+
+    // ── FALLING NAILS CANVAS ANIMATION ──
+    const canvas = document.getElementById('fallingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let W, H;
+    function resizeCanvas() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Load nail image
+    const nailImg = new Image();
+    nailImg.src = NAIL_SRC;
+
+    // Nail particle class
+    class NailParticle {
+      constructor() { this.reset(true); }
+      reset(initial) {
+        this.x     = Math.random() * W;
+        this.y     = initial ? Math.random() * -H : -80;
+        this.size  = 28 + Math.random() * 36;
+        this.speed = 0.8 + Math.random() * 1.8;
+        this.rot   = Math.random() * Math.PI * 2;
+        this.rotSpd= (Math.random() - 0.5) * 0.04;
+        this.sway  = (Math.random() - 0.5) * 0.6;
+        this.swayT = Math.random() * Math.PI * 2;
+        this.alpha = 0.12 + Math.random() * 0.25;
+        // slight blur / glow tint
+        this.tint  = Math.random() > 0.5; // apply warm tint
+      }
+      update() {
+        this.swayT += 0.018;
+        this.x += Math.sin(this.swayT) * this.sway;
+        this.y += this.speed;
+        this.rot += this.rotSpd;
+        if (this.y > H + 100) this.reset(false);
+      }
+      draw() {
+        if (!nailImg.complete) return;
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        const hw = this.size / 2;
+        const hh = (this.size * 1.3) / 2;
+        // Warm tint overlay
+        if (this.tint) {
+          ctx.filter = 'sepia(0.4) saturate(1.5) hue-rotate(-10deg)';
+        }
+        ctx.drawImage(nailImg, -hw, -hh, this.size, this.size * 1.3);
+        ctx.restore();
+      }
+    }
+
+    const particles = [];
+    for (let i = 0; i < 22; i++) particles.push(new NailParticle());
+
+    let animRunning = true;
+    function animate() {
+      if (!animRunning) return;
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    nailImg.onload = animate;
+    animate(); // start even before load (will skip draw)
+
+    // Stop animation when hero scrolls out
+    const heroEl = document.getElementById('home');
+    const heroObserver = new IntersectionObserver(entries => {
+      animRunning = entries[0].isIntersecting;
+      if (animRunning) animate();
+    }, { threshold: 0 });
+    heroObserver.observe(heroEl);
+
+    // ── Parallax ──
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (heroBg) heroBg.style.transform = `scale(1.05) translateY(${y * 0.35}px)`;
+      document.querySelectorAll('[data-parallax]').forEach(el => {
+        const speed = parseFloat(el.dataset.parallax);
+        el.style.transform = `translateY(${y * speed * -0.3}px)`;
+      });
+    });
+
+    // ── Style pickers ──
+    let selectedShape = 'Almond', selectedFinish = 'Glossy';
+    document.querySelectorAll('#shapePicker .style-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#shapePicker .style-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedShape = btn.dataset.val;
+        animStepDot(2);
+      });
+    });
+    document.querySelectorAll('#finishPicker .style-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#finishPicker .style-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedFinish = btn.dataset.val;
+        animStepDot(3);
+      });
+    });
+    function animStepDot(n) {
+      for (let i = 1; i <= 3; i++) document.getElementById('sd'+i).classList.toggle('active', i <= n);
+    }
+    document.getElementById('name').addEventListener('input', () => animStepDot(1));
+
+    // ── WhatsApp ──
     function sendToWhatsApp() {
       const name    = document.getElementById('name').value.trim();
       const phone   = document.getElementById('phone').value.trim();
       const address = document.getElementById('address').value.trim();
-
-      if (!name) { alert('Please enter your name.'); return; }
-      if (!phone) { alert('Please enter your phone number.'); return; }
-      if (!address) { alert('Please enter your delivery address.'); return; }
-
+      const notes   = document.getElementById('notes').value.trim();
+      if (!name)    { shakeField('name');    return; }
+      if (!phone)   { shakeField('phone');   return; }
+      if (!address) { shakeField('address'); return; }
       const message =
         `🌸 *New Order – Sandy Nails* 🌸\n\n` +
-        `👤 *Name:* ${name}\n` +
-        `📞 *Phone:* ${phone}\n` +
-        `📍 *Address:* ${address}\n\n` +
-        `_Please get in touch to discuss my custom nail design!_`;
-
-      const waNumber = '917358473540'; // Country code 91 + number
-      const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+        `👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n` +
+        `💅 *Shape:* ${selectedShape}\n✨ *Finish:* ${selectedFinish}\n` +
+        (notes ? `📝 *Notes:* ${notes}\n` : '') +
+        `\n_Please get in touch to discuss my custom nail design!_ 🌸`;
+      window.open(`https://wa.me/917358473540?text=${encodeURIComponent(message)}`, '_blank');
+    }
+    function shakeField(id) {
+      const el = document.getElementById(id);
+      el.style.animation = 'none'; el.getBoundingClientRect();
+      el.style.animation = 'shakeInput 0.4s ease'; el.style.borderColor = '#e05555'; el.focus();
+      setTimeout(() => { el.style.borderColor=''; el.style.animation=''; }, 1000);
     }
 
-    // Scroll reveal
+    // ── Cursor ──
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+      setTimeout(() => { ring.style.left = e.clientX+'px'; ring.style.top = e.clientY+'px'; }, 60);
+    });
+    document.querySelectorAll('a,button,.style-pill,.gallery-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width='54px'; ring.style.height='54px'; ring.style.borderColor='rgba(196,112,106,.9)'; });
+      el.addEventListener('mouseleave', () => { ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(196,112,106,.5)'; });
+    });
+
+    // ── Scroll reveal ──
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
