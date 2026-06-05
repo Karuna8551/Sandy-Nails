@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"></html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sandy Nails – Custom Nail Artistry</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --blush: #f7d6cc;
@@ -17,14 +17,15 @@
       --muted: #8a6460;
       --gold:  #c9a87c;
       --gold2: #e2c99a;
+      --white: #ffffff;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
 
     /* ── CURSOR ── */
     .cursor-dot  { position:fixed;z-index:9999;width:10px;height:10px;background:var(--deep);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .08s,background .2s; }
-    .cursor-ring { position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid rgba(196,112,106,.6);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .18s ease,width .2s,height .2s,border-color .2s; }
+    .cursor-ring { position:fixed;z-index:9998;width:36px;height:36px;border:1.5px solid rgba(196,112,106,.6);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:left .12s ease,top .12s ease,width .2s,height .2s,border-color .2s; }
 
     /* ── HERO ── */
     .hero {
@@ -33,89 +34,142 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       overflow: hidden; padding: 2rem;
+      background: linear-gradient(145deg, #fbeee9 0%, #f7d6cc 40%, #e8c5b8 70%, #d4a090 100%);
     }
 
-    /* Sister photo — full bleed */
-    .hero-bg {
-      position: absolute; inset: 0; z-index: 0;
-      background-size: cover;
-      background-position: center top;
-      animation: bgZoom 18s ease-in-out infinite alternate;
+    /* Decorative nail art blobs in hero background */
+    .hero-blob {
+      position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
     }
-    @keyframes bgZoom {
-      from { transform: scale(1.05); }
-      to   { transform: scale(1.12); }
+    .hero-blob-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(196,112,106,0.18) 0%, transparent 70%);
+      top: -80px; right: -100px;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(201,168,124,0.15) 0%, transparent 70%);
+      bottom: 60px; left: -60px;
+      animation: blobFloat 11s ease-in-out infinite reverse;
+    }
+    .hero-blob-3 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(247,214,204,0.4) 0%, transparent 70%);
+      top: 40%; right: 20%;
+      animation: blobFloat 7s ease-in-out infinite 2s;
+    }
+    @keyframes blobFloat {
+      0%,100%{transform:translate(0,0) scale(1);}
+      50%{transform:translate(20px,-20px) scale(1.06);}
     }
 
-    /* Transparent overlay — lets sister face show through subtly */
-    .hero-overlay {
-      position: absolute; inset: 0; z-index: 1;
-      background:
-        linear-gradient(to bottom,
-          rgba(253,247,244,0.72) 0%,
-          rgba(247,214,204,0.45) 30%,
-          rgba(196,112,106,0.22) 60%,
-          rgba(30,15,13,0.80) 100%
-        );
-    }
-    /* Grain */
+    /* Grain texture overlay */
     .hero-grain {
-      position: absolute; inset: 0; z-index: 2; opacity: 0.04;
+      position: absolute; inset: 0; z-index: 1; opacity: 0.035;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       pointer-events: none;
     }
 
-    /* ── FALLING NAILS CANVAS ── */
-    #fallingCanvas {
-      position: absolute; inset: 0; z-index: 3;
-      pointer-events: none;
+    /* Floating nail shapes (CSS-only) */
+    .floating-nails { position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden; }
+    .fn {
+      position: absolute;
+      border-radius: 50% 50% 48% 52% / 60% 60% 40% 40%;
+      opacity: 0.12;
+      animation: fnFall linear infinite;
+    }
+    .fn:nth-child(1)  { width:22px;height:32px; background:var(--deep);    left:8%;  animation-duration:9s;  animation-delay:-2s;  }
+    .fn:nth-child(2)  { width:16px;height:24px; background:var(--gold);    left:20%; animation-duration:12s; animation-delay:-5s;  }
+    .fn:nth-child(3)  { width:28px;height:38px; background:var(--rose);    left:35%; animation-duration:8s;  animation-delay:-1s;  }
+    .fn:nth-child(4)  { width:18px;height:28px; background:var(--deeper);  left:52%; animation-duration:14s; animation-delay:-7s;  }
+    .fn:nth-child(5)  { width:24px;height:34px; background:var(--gold2);   left:67%; animation-duration:10s; animation-delay:-3s;  }
+    .fn:nth-child(6)  { width:14px;height:20px; background:var(--deep);    left:80%; animation-duration:11s; animation-delay:-9s;  }
+    .fn:nth-child(7)  { width:20px;height:30px; background:var(--rose);    left:90%; animation-duration:7s;  animation-delay:-4s;  }
+    .fn:nth-child(8)  { width:26px;height:36px; background:var(--blush);   left:45%; animation-duration:13s; animation-delay:-6s;  }
+    .fn:nth-child(9)  { width:18px;height:26px; background:var(--gold);    left:15%; animation-duration:9s;  animation-delay:-8s;  }
+    .fn:nth-child(10) { width:22px;height:32px; background:var(--deeper);  left:72%; animation-duration:12s; animation-delay:-2s;  }
+    @keyframes fnFall {
+      0%   { transform: translateY(-80px) rotate(0deg);   opacity: 0;    }
+      10%  { opacity: 0.12; }
+      90%  { opacity: 0.08; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0;    }
     }
 
     .hero-content {
       position: relative; z-index: 10;
       display: flex; flex-direction: column;
       align-items: center; text-align: center; gap: 1.2rem;
+      max-width: 800px;
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: .5rem;
       font-size: .68rem; letter-spacing: .42em; text-transform: uppercase; font-weight: 500;
       color: var(--gold);
-      background: rgba(253,247,244,.72); backdrop-filter: blur(12px) saturate(1.5);
-      border: 1px solid rgba(201,168,124,.3);
+      background: rgba(253,247,244,.85); backdrop-filter: blur(12px) saturate(1.5);
+      border: 1px solid rgba(201,168,124,.35);
       padding: .5rem 1.4rem; border-radius: 2rem;
       animation: riseIn 1s .1s both;
     }
     .hero-badge::before,.hero-badge::after { content:'✦'; font-size:.55rem; }
     .hero h1 {
       font-family:'Playfair Display',serif;
-      font-size: clamp(4.5rem,14vw,9rem);
+      font-size: clamp(4rem,13vw,8.5rem);
       font-weight: 300; line-height: .88; letter-spacing: -.01em; color: var(--dark);
       animation: riseIn 1s .25s both;
-      text-shadow: 0 4px 40px rgba(253,247,244,.6);
     }
     .hero h1 em { font-style:italic; color: var(--deep); display:block; }
     .hero-tagline {
-      font-size: clamp(.88rem,2vw,1rem); font-weight: 300; color: var(--muted);
-      letter-spacing: .06em; max-width: 420px; line-height: 1.8;
+      font-size: clamp(.88rem,2vw,1.05rem); font-weight: 300; color: var(--muted);
+      letter-spacing: .04em; max-width: 420px; line-height: 1.85;
       animation: riseIn 1s .4s both;
     }
     .hero-cta-row { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; animation: riseIn 1s .55s both; }
     .btn-primary {
       padding:.9rem 2.5rem; background:var(--deep); color:#fff;
-      font-family:'Jost',sans-serif; font-size:.8rem; font-weight:500;
+      font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:500;
       letter-spacing:.16em; text-transform:uppercase; text-decoration:none;
       border:none; cursor:pointer; border-radius:3rem;
       box-shadow:0 8px 28px rgba(196,112,106,.45); transition:all .3s;
     }
     .btn-primary:hover { background:var(--deeper); transform:translateY(-3px); box-shadow:0 14px 36px rgba(196,112,106,.5); }
     .btn-outline {
-      padding:.9rem 2.2rem; background:rgba(255,255,255,.5);
+      padding:.9rem 2.2rem; background:rgba(255,255,255,.6);
       backdrop-filter:blur(8px); color:var(--dark);
-      font-family:'Jost',sans-serif; font-size:.8rem; font-weight:500;
+      font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:500;
       letter-spacing:.16em; text-transform:uppercase; text-decoration:none;
-      border:1.5px solid rgba(196,112,106,.35); border-radius:3rem; cursor:pointer; transition:all .3s;
+      border:1.5px solid rgba(196,112,106,.4); border-radius:3rem; cursor:pointer; transition:all .3s;
     }
-    .btn-outline:hover { background:rgba(255,255,255,.8); transform:translateY(-3px); }
+    .btn-outline:hover { background:rgba(255,255,255,.9); transform:translateY(-3px); }
+
+    /* Hero nail showcase cards */
+    .hero-nail-cards {
+      display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap;
+      animation: riseIn 1s .7s both;
+    }
+    .hero-nail-chip {
+      width: 52px; height: 72px;
+      border-radius: 50% 50% 48% 52% / 55% 55% 45% 45%;
+      box-shadow: 0 6px 20px rgba(42,26,24,.18);
+      transition: transform .3s;
+      position: relative; overflow: hidden;
+    }
+    .hero-nail-chip:hover { transform: translateY(-6px) scale(1.05); }
+    .hero-nail-chip:nth-child(1) { background: linear-gradient(160deg, #f7c5c0, #e08070); }
+    .hero-nail-chip:nth-child(2) { background: linear-gradient(160deg, #c9a87c, #e0c898); transform: scale(1.15); }
+    .hero-nail-chip:nth-child(3) { background: linear-gradient(160deg, #c4706a, #9e4f49); }
+    .hero-nail-chip:nth-child(4) { background: linear-gradient(160deg, #2a1a18, #6b3f3c); }
+    .hero-nail-chip:nth-child(5) { background: linear-gradient(160deg, #e8d5f0, #c9a0d4); }
+    .hero-nail-chip:nth-child(6) { background: linear-gradient(160deg, #d0e8f0, #8bbfcc); }
+    /* Shimmer on nail chips */
+    .hero-nail-chip::after {
+      content: '';
+      position: absolute; top: 10%; left: 15%;
+      width: 25%; height: 35%;
+      background: rgba(255,255,255,0.35);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
 
     .scroll-hint {
       position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%);
@@ -135,27 +189,81 @@
     /* ── ABOUT SPLIT ── */
     .about-split { display:grid; grid-template-columns:1fr 1fr; max-width:1100px; margin:0 auto; padding:7rem 2rem; gap:5rem; align-items:center; }
     @media(max-width:768px){.about-split{grid-template-columns:1fr;gap:3rem;padding:4rem 1.5rem;}}
-    .about-visual { position:relative; }
-    .about-img-frame {
-      width:100%; aspect-ratio:3/4; border-radius:40% 60% 60% 40%/50% 50% 50% 50%;
-      overflow:hidden; background:linear-gradient(135deg,var(--blush),var(--rose));
-      box-shadow:0 30px 70px rgba(196,112,106,.25); position:relative;
+
+    .about-visual { position:relative; display:flex; justify-content:center; }
+    
+    /* CSS-only nail art showcase replacing broken image */
+    .nail-art-showcase {
+      width: 280px;
+      display: flex; flex-direction: column; gap: 12px;
+      position: relative;
     }
-    .about-img-frame img { width:100%; height:100%; object-fit:cover; opacity:.92; }
-    .nail-cluster { position:absolute; bottom:-2rem; right:-2rem; width:160px; height:160px; display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-    .nail-thumb { border-radius:1rem; overflow:hidden; box-shadow:0 8px 22px rgba(42,26,24,.2); }
-    .nail-thumb img { width:100%; height:100%; object-fit:cover; }
-    .nail-thumb:nth-child(1){background:linear-gradient(135deg,#f7c5c0,#e8a898);}
-    .nail-thumb:nth-child(2){background:linear-gradient(135deg,#c9a87c,#e2d0b5);}
-    .nail-thumb:nth-child(3){background:linear-gradient(135deg,#c4706a,#b55c56);}
-    .nail-thumb:nth-child(4){background:linear-gradient(135deg,#2a1a18,#8a6460);}
+    .nas-row { display: flex; gap: 10px; justify-content: center; }
+    .nas-nail {
+      border-radius: 50% 50% 48% 52% / 55% 55% 45% 45%;
+      box-shadow: 0 8px 28px rgba(42,26,24,.2);
+      position: relative; overflow: hidden; flex-shrink: 0;
+      transition: transform .3s;
+    }
+    .nas-nail:hover { transform: translateY(-6px) scale(1.04); }
+    .nas-nail::after {
+      content: '';
+      position: absolute; top: 8%; left: 12%;
+      width: 28%; height: 32%;
+      background: rgba(255,255,255,.3);
+      border-radius: 50%;
+      transform: rotate(-20deg);
+    }
+    /* Various nail color styles */
+    .nn-blush   { background: linear-gradient(160deg, #f7c5c0, #e8a898); }
+    .nn-gold    { background: linear-gradient(160deg, #d4a84b, #f0d080); }
+    .nn-rose    { background: linear-gradient(160deg, #c4706a, #e8908a); }
+    .nn-dark    { background: linear-gradient(160deg, #2a1a18, #5a3530); }
+    .nn-pearl   { background: linear-gradient(160deg, #f0ece8, #e0d5cc); }
+    .nn-holo    { background: linear-gradient(135deg, #c8a8e8, #a8c8e8, #a8e8c8, #e8c8a8); }
+    .nn-nude    { background: linear-gradient(160deg, #e8d0c0, #d4b8a8); }
+    .nn-chrome  { background: linear-gradient(135deg, #d0d8e0, #b8c4cc, #e8eef2); }
+    .nn-berry   { background: linear-gradient(160deg, #8b4060, #c06080); }
+    .nn-mint    { background: linear-gradient(160deg, #80c8a8, #a8dcc8); }
+
+    /* Nail size variants */
+    .ns-sm  { width: 36px; height: 52px; }
+    .ns-md  { width: 46px; height: 64px; }
+    .ns-lg  { width: 52px; height: 72px; }
+    .ns-xl  { width: 60px; height: 84px; }
+
+    /* Decorative gems on some nails */
+    .nn-gem::before {
+      content: '💎';
+      position: absolute;
+      bottom: 20%; left: 50%; transform: translateX(-50%);
+      font-size: .55rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,.3));
+    }
+    .nn-star::before {
+      content: '✦';
+      position: absolute;
+      bottom: 22%; left: 50%; transform: translateX(-50%);
+      font-size: .6rem; color: rgba(255,220,140,.9);
+    }
+
     .about-gold-ring {
-      position:absolute; top:-1.5rem; left:-1.5rem; width:80px; height:80px;
+      position:absolute; top:-1.5rem; right:-1rem; width:80px; height:80px;
       border-radius:50%; border:1.5px solid rgba(201,168,124,.5);
       animation:spinRing 12s linear infinite;
     }
     .about-gold-ring::after { content:'✦'; position:absolute; top:-10px; left:50%; transform:translateX(-50%); color:var(--gold); font-size:.7rem; background:var(--cream); padding:2px 4px; }
     @keyframes spinRing{to{transform:rotate(360deg);}}
+
+    .about-badge {
+      position: absolute; bottom: -1rem; left: -1rem;
+      background: var(--dark); color: var(--blush);
+      padding: 1rem 1.4rem; border-radius: 1.4rem;
+      font-size: .72rem; line-height: 1.4; font-weight: 300;
+      box-shadow: 0 12px 30px rgba(42,26,24,.25);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .about-badge strong { display:block; font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--rose); line-height:1; margin-bottom:.2rem; }
+
     .about-text .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1.2rem;display:block;}
     .about-text h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.15;color:var(--dark);margin-bottom:1.6rem;}
     .about-text h2 em{font-style:italic;color:var(--deep);}
@@ -164,26 +272,89 @@
     .stat-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--deep);line-height:1;}
     .stat-label{font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem;}
 
-    /* ── GALLERY STRIP ── */
-    .gallery-strip{padding:0 2rem 5rem;overflow:hidden;}
-    .gallery-track{display:flex;gap:1.2rem;animation:galleryScroll 30s linear infinite;width:max-content;}
-    .gallery-track:hover{animation-play-state:paused;}
-    @keyframes galleryScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-    .gallery-card{width:200px;height:260px;border-radius:2rem;overflow:hidden;flex-shrink:0;position:relative;box-shadow:0 8px 28px rgba(42,26,24,.12);transition:transform .4s,box-shadow .4s;cursor:pointer;}
-    .gallery-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 22px 50px rgba(196,112,106,.3);}
-    .gallery-card img{width:100%;height:100%;object-fit:cover;}
-    .gc1{background:linear-gradient(145deg,#f9d5ce,#e8a898);}
-    .gc2{background:linear-gradient(145deg,#c4706a,#9e4f49);}
-    .gc3{background:linear-gradient(145deg,#c9a87c,#f0dfc2);}
-    .gc4{background:linear-gradient(145deg,#2a1a18,#6b3f3c);}
-    .gc5{background:linear-gradient(145deg,#f7e0d9,#c9a87c);}
-    .gc6{background:linear-gradient(145deg,#e8a898,#c4706a);}
-    .gallery-card-label{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 1rem 1rem;background:linear-gradient(to top,rgba(30,15,13,.75),transparent);color:#fff;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:400;}
-    .gallery-nail-icon{font-size:3.5rem;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));}
+    /* ── GALLERY GRID (replacing broken scroll strip) ── */
+    .gallery-section { padding: 2rem 2rem 6rem; background: var(--cream); }
+    .gallery-section-head { text-align:center; padding-bottom:3rem; }
+    .gallery-section-head .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:.8rem;}
+    .gallery-section-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--dark);}
+    .gallery-section-head h2 em{font-style:italic;color:var(--deep);}
+
+    .gallery-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto;
+      gap: 1.2rem;
+    }
+    @media(max-width:900px){ .gallery-grid { grid-template-columns: repeat(3,1fr); } }
+    @media(max-width:600px){ .gallery-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .gc {
+      border-radius: 1.8rem; overflow:hidden; position:relative;
+      box-shadow: 0 8px 28px rgba(42,26,24,.1);
+      transition: transform .4s, box-shadow .4s; cursor: pointer;
+      aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gc:hover { transform:translateY(-8px) scale(1.02); box-shadow:0 20px 48px rgba(196,112,106,.28); }
+    .gc:nth-child(1) { background: linear-gradient(145deg,#f9d5ce,#e8a898); }
+    .gc:nth-child(2) { background: linear-gradient(145deg,#c4706a,#9e4f49); }
+    .gc:nth-child(3) { background: linear-gradient(145deg,#c9a87c,#f0dfc2); }
+    .gc:nth-child(4) { background: linear-gradient(145deg,#2a1a18,#6b3f3c); }
+    .gc:nth-child(5) { background: linear-gradient(145deg,#f0ece8,#e0d5cc); grid-row: span 1; }
+    .gc:nth-child(6) { background: linear-gradient(145deg,#c8a8e8,#a8c8e8); }
+    .gc:nth-child(7) { background: linear-gradient(145deg,#e8d0c0,#d4b8a8); }
+    .gc:nth-child(8) { background: linear-gradient(145deg,#8b4060,#c06080); }
+
+    /* Large nail art display inside each card */
+    .gc-nail-display {
+      display: flex; gap: 6px; align-items: flex-end; justify-content: center;
+      padding: 1.5rem 1rem 2.5rem; flex-wrap: nowrap;
+    }
+    .gc-nail {
+      border-radius: 50% 50% 48% 52% / 55% 55% 45% 45%;
+      position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .gc-nail::after {
+      content:''; position:absolute; top:8%; left:12%; width:28%; height:32%;
+      background:rgba(255,255,255,.25); border-radius:50%; transform:rotate(-20deg);
+    }
+    /* Heights vary per finger */
+    .gc-nail:nth-child(1),.gc-nail:nth-child(5) { width:18px; height:28px; }
+    .gc-nail:nth-child(2),.gc-nail:nth-child(4) { width:22px; height:38px; }
+    .gc-nail:nth-child(3)                        { width:26px; height:46px; }
+
+    /* Card 1 — blush ombre */
+    .gc:nth-child(1) .gc-nail { background: linear-gradient(160deg, #f9d0c8, #e0908a); }
+    /* Card 2 — dark red */
+    .gc:nth-child(2) .gc-nail { background: linear-gradient(160deg, #9e4f49, #c4706a); }
+    .gc:nth-child(2) .gc-nail::before { content:'✦'; position:absolute; bottom:18%; left:50%; transform:translateX(-50%); font-size:.5rem; color:rgba(255,220,140,.8); }
+    /* Card 3 — gold */
+    .gc:nth-child(3) .gc-nail { background: linear-gradient(160deg, #d4a84b, #f0d080); }
+    /* Card 4 — dark glam */
+    .gc:nth-child(4) .gc-nail { background: linear-gradient(160deg, #2a1a18, #5a3530); }
+    .gc:nth-child(4) .gc-nail::before { content:'💎'; position:absolute; bottom:15%; left:50%; transform:translateX(-50%); font-size:.45rem; }
+    /* Card 5 — pearl */
+    .gc:nth-child(5) .gc-nail { background: linear-gradient(160deg, #f0ece8, #e0d5cc); }
+    /* Card 6 — holo */
+    .gc:nth-child(6) .gc-nail { background: linear-gradient(135deg, #c8a8e8, #a8c8e8, #a8e8c8); }
+    /* Card 7 — nude */
+    .gc:nth-child(7) .gc-nail { background: linear-gradient(160deg, #e8d0c0, #cba898); }
+    /* Card 8 — berry */
+    .gc:nth-child(8) .gc-nail { background: linear-gradient(160deg, #8b4060, #c06080); }
+    .gc:nth-child(8) .gc-nail::before { content:'🌸'; position:absolute; bottom:14%; left:50%; transform:translateX(-50%); font-size:.42rem; }
+
+    .gc-label {
+      position:absolute; bottom:0; left:0; right:0;
+      padding:2rem 1.2rem 1.1rem;
+      background:linear-gradient(to top, rgba(30,15,13,.7), transparent);
+      color:#fff; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; font-weight:400;
+    }
+    .gc-label span { display:block; font-family:'Playfair Display',serif; font-size:1rem; font-weight:300; font-style:italic; letter-spacing:0; text-transform:none; margin-bottom:.1rem; }
 
     /* ── SERVICES ── */
     .services{background:linear-gradient(160deg,var(--dark) 0%,#2e1614 100%);padding:7rem 2rem;position:relative;overflow:hidden;}
-    .services::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(196,112,106,.12),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(201,168,124,.08),transparent 60%);}
+    .services::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(196,112,106,.12),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(201,168,124,.08),transparent 60%);pointer-events:none;}
     .services-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
     .section-header{text-align:center;margin-bottom:4rem;}
     .section-header .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:1rem;}
@@ -195,35 +366,56 @@
     .svc-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:1.4rem;background:rgba(196,112,106,.15);}
     .svc-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:400;color:var(--blush);margin-bottom:.65rem;}
     .svc-card p{font-size:.83rem;color:rgba(247,214,204,.6);line-height:1.7;font-weight:300;}
-    .svc-card .svc-price{margin-top:1.2rem;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:500;}
+
+    /* ── PROCESS STEPS ── */
+    .process { padding: 6rem 2rem; background: var(--nude); }
+    .process-inner { max-width: 900px; margin: 0 auto; }
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-top: 3.5rem; position: relative; }
+    .process-steps::before {
+      content: ''; position: absolute; top: 2rem; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(to right, transparent, var(--rose), transparent);
+    }
+    @media(max-width:600px){ .process-steps::before { display:none; } }
+    .ps {
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: .8rem;
+    }
+    .ps-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--deep); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+      box-shadow: 0 6px 20px rgba(196,112,106,.4);
+      position: relative; z-index: 1;
+    }
+    .ps h4 { font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:var(--dark); }
+    .ps p  { font-size:.82rem; color:var(--muted); line-height:1.6; font-weight:300; }
 
     /* ── ORDER FORM ── */
     .order-section{padding:8rem 2rem;background:var(--cream);position:relative;overflow:hidden;}
-    .order-section::before{content:'';position:absolute;border-radius:50%;pointer-events:none;width:600px;height:600px;background:radial-gradient(circle,rgba(196,112,106,.1),transparent 70%);top:-100px;left:-200px;}
-    .order-section::after{content:'';position:absolute;border-radius:50%;pointer-events:none;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,124,.12),transparent 70%);bottom:-80px;right:-100px;}
+    .order-section::before{content:'';position:absolute;border-radius:50%;pointer-events:none;width:600px;height:600px;background:radial-gradient(circle,rgba(196,112,106,.08),transparent 70%);top:-100px;left:-200px;}
+    .order-section::after{content:'';position:absolute;border-radius:50%;pointer-events:none;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,124,.1),transparent 70%);bottom:-80px;right:-100px;}
     .order-inner{max-width:660px;margin:0 auto;position:relative;z-index:2;}
     .order-head{text-align:center;margin-bottom:3rem;}
     .order-head .tag{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;display:block;margin-bottom:1rem;}
     .order-head h2{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,3.8rem);font-weight:300;line-height:1.1;color:var(--dark);margin-bottom:.8rem;}
     .order-head h2 em{font-style:italic;color:var(--deep);}
     .order-head p{font-size:.9rem;color:var(--muted);line-height:1.7;font-weight:300;}
-    .form-glass{background:rgba(255,255,255,.78);backdrop-filter:blur(24px) saturate(1.8);border:1px solid rgba(196,112,106,.18);border-radius:2.5rem;padding:3.5rem 3rem;box-shadow:0 2px 0 rgba(255,255,255,.9) inset,0 24px 64px rgba(42,26,24,.1),0 4px 16px rgba(196,112,106,.08);animation:formFloat 5s ease-in-out infinite;}
-    @keyframes formFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+    .form-glass{background:rgba(255,255,255,.82);backdrop-filter:blur(24px) saturate(1.8);border:1px solid rgba(196,112,106,.15);border-radius:2.5rem;padding:3.5rem 3rem;box-shadow:0 2px 0 rgba(255,255,255,.9) inset,0 24px 64px rgba(42,26,24,.08),0 4px 16px rgba(196,112,106,.06);}
     @media(max-width:600px){.form-glass{padding:2.5rem 1.5rem;}}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
     @media(max-width:520px){.form-row{grid-template-columns:1fr;}}
     .fg{margin-bottom:1.5rem;position:relative;}
     .fg label{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:.55rem;}
-    .fg input,.fg textarea,.fg select{width:100%;padding:.9rem 1.2rem;border:1.5px solid rgba(196,112,106,.2);border-radius:1rem;background:rgba(253,247,244,.8);font-family:'Jost',sans-serif;font-size:.93rem;font-weight:300;color:var(--dark);outline:none;transition:all .25s;}
+    .fg input,.fg textarea,.fg select{width:100%;padding:.9rem 1.2rem;border:1.5px solid rgba(196,112,106,.2);border-radius:1rem;background:rgba(253,247,244,.8);font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:300;color:var(--dark);outline:none;transition:all .25s;}
     .fg textarea{resize:vertical;min-height:95px;}
     .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--deep);background:#fff;box-shadow:0 0 0 4px rgba(196,112,106,.1);}
     .fg input::placeholder,.fg textarea::placeholder{color:#c4a8a4;}
     .fg .input-icon{position:absolute;right:1rem;top:2.4rem;color:var(--rose);font-size:1rem;pointer-events:none;}
     .nail-style-picker{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;}
-    .style-pill{padding:.45rem 1.1rem;border:1.5px solid rgba(196,112,106,.25);border-radius:2rem;font-size:.78rem;cursor:pointer;color:var(--muted);background:transparent;font-family:'Jost',sans-serif;transition:all .2s;}
+    .style-pill{padding:.45rem 1.1rem;border:1.5px solid rgba(196,112,106,.25);border-radius:2rem;font-size:.78rem;cursor:pointer;color:var(--muted);background:transparent;font-family:'DM Sans',sans-serif;transition:all .2s;}
     .style-pill.active,.style-pill:hover{background:var(--deep);color:#fff;border-color:var(--deep);box-shadow:0 4px 12px rgba(196,112,106,.35);}
-    .wa-btn{width:100%;padding:1.1rem 2rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-family:'Jost',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border:none;border-radius:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.8rem;box-shadow:0 8px 28px rgba(37,211,102,.35);transition:all .3s;margin-top:.5rem;}
-    .wa-btn:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(37,211,102,.45);filter:brightness(1.05);}
+    .wa-btn{width:100%;padding:1.1rem 2rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border:none;border-radius:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.8rem;box-shadow:0 8px 28px rgba(37,211,102,.3);transition:all .3s;margin-top:.5rem;}
+    .wa-btn:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(37,211,102,.42);filter:brightness(1.05);}
     .wa-btn .wa-i{font-size:1.3rem;}
     .form-note{margin-top:1.2rem;text-align:center;font-size:.78rem;color:var(--muted);line-height:1.6;}
     .form-note strong{color:var(--deep);}
@@ -263,24 +455,69 @@
 
     @keyframes riseIn{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
     @keyframes shakeInput{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+
+    /* Responsive nav bar */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: .9rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background .4s, box-shadow .4s;
+    }
+    .topnav.scrolled {
+      background: rgba(253,247,244,.92); backdrop-filter: blur(16px);
+      box-shadow: 0 2px 20px rgba(42,26,24,.08);
+    }
+    .topnav-brand { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:300; color:var(--dark); text-decoration:none; }
+    .topnav-brand em { font-style:italic; color:var(--deep); }
+    .topnav-links { display:flex; gap:2rem; align-items:center; }
+    .topnav-links a { font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color .2s; font-weight:400; }
+    .topnav-links a:hover { color:var(--deep); }
+    .topnav-links .nav-cta { background:var(--deep); color:#fff; padding:.5rem 1.3rem; border-radius:2rem; font-size:.72rem; letter-spacing:.12em; }
+    .topnav-links .nav-cta:hover { background:var(--deeper); color:#fff; }
+    @media(max-width:600px){ .topnav-links { display:none; } }
   </style>
 </head>
 <body>
 
+  <!-- Cursor -->
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
+  <!-- Top Nav -->
+  <nav class="topnav" id="topNav">
+    <a href="#home" class="topnav-brand">Sandy <em>Nails</em></a>
+    <div class="topnav-links">
+      <a href="#gallery">Gallery</a>
+      <a href="#services">Services</a>
+      <a href="#order" class="nav-cta">Order Now ✦</a>
+    </div>
+  </nav>
+
   <!-- ══ HERO ══ -->
   <section class="hero" id="home">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-overlay"></div>
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
     <div class="hero-grain"></div>
-    <canvas id="fallingCanvas"></canvas>
+    <div class="floating-nails">
+      <div class="fn"></div><div class="fn"></div><div class="fn"></div>
+      <div class="fn"></div><div class="fn"></div><div class="fn"></div>
+      <div class="fn"></div><div class="fn"></div><div class="fn"></div>
+      <div class="fn"></div>
+    </div>
 
     <div class="hero-content">
       <div class="hero-badge">Handcrafted Luxury Nails</div>
-      <h1 data-parallax="0.3">Sandy<br/><em>Nails</em></h1>
-      <p class="hero-tagline">Bespoke press-on nails crafted to perfection — your vision, our artistry.</p>
+      <h1>Sandy<br/><em>Nails</em></h1>
+      <p class="hero-tagline">Bespoke press-on nails crafted to perfection — your vision, our artistry, delivered to your door.</p>
+      <div class="hero-nail-cards">
+        <div class="hero-nail-chip"></div>
+        <div class="hero-nail-chip"></div>
+        <div class="hero-nail-chip"></div>
+        <div class="hero-nail-chip"></div>
+        <div class="hero-nail-chip"></div>
+        <div class="hero-nail-chip"></div>
+      </div>
       <div class="hero-cta-row">
         <a href="#order" class="btn-primary">Order Your Set ✦</a>
         <a href="#gallery" class="btn-outline">See Our Work</a>
@@ -297,18 +534,37 @@
   <div class="ribbon"><div class="ribbon-track" id="ribbonTrack"></div></div>
 
   <!-- ══ ABOUT ══ -->
-  <section style="background:var(--cream);">
+  <section style="background:var(--cream);" id="about">
     <div class="about-split">
       <div class="about-visual reveal-left">
         <div class="about-gold-ring"></div>
-        <div class="about-img-frame">
-          <img id="aboutSisterImg" src="" alt="Sandy — Nail Artist" />
+        <!-- CSS-only nail art showcase (no images needed) -->
+        <div class="nail-art-showcase">
+          <div class="nas-row">
+            <div class="nas-nail nn-pearl ns-sm"></div>
+            <div class="nas-nail nn-gold nn-star ns-md"></div>
+            <div class="nas-nail nn-rose ns-xl"></div>
+            <div class="nas-nail nn-gold nn-star ns-md"></div>
+            <div class="nas-nail nn-nude ns-sm"></div>
+          </div>
+          <div class="nas-row">
+            <div class="nas-nail nn-blush ns-sm"></div>
+            <div class="nas-nail nn-deep ns-md" style="background:linear-gradient(160deg,#2a1a18,#5a3530);"></div>
+            <div class="nas-nail nn-chrome ns-xl nn-gem"></div>
+            <div class="nas-nail nn-holo ns-md"></div>
+            <div class="nas-nail nn-berry ns-sm"></div>
+          </div>
+          <div class="nas-row">
+            <div class="nas-nail nn-mint ns-sm"></div>
+            <div class="nas-nail nn-rose ns-md nn-star"></div>
+            <div class="nas-nail nn-dark ns-lg" style="background:linear-gradient(160deg,#c4706a,#9e4f49);"></div>
+            <div class="nas-nail nn-blush ns-md"></div>
+            <div class="nas-nail nn-pearl ns-sm"></div>
+          </div>
         </div>
-        <div class="nail-cluster">
-          <div class="nail-thumb"><img id="nt1" src="" alt="nail" /></div>
-          <div class="nail-thumb"><img id="nt2" src="" alt="nail" /></div>
-          <div class="nail-thumb"><img id="nt3" src="" alt="nail" /></div>
-          <div class="nail-thumb"><img id="nt4" src="" alt="nail" /></div>
+        <div class="about-badge">
+          <strong>500+</strong>
+          Sets Created & Loved
         </div>
       </div>
       <div class="about-text reveal-right">
@@ -325,29 +581,124 @@
     </div>
   </section>
 
-  <!-- ══ GALLERY STRIP ══ -->
-  <section style="background:var(--cream);padding-top:1rem;" id="gallery">
-    <div style="text-align:center;padding:0 2rem 2.5rem;" class="reveal">
-      <span style="font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;">Our Work</span>
-      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--dark);margin-top:.6rem;">Every set, a <em style="font-style:italic;color:var(--deep)">masterpiece</em></h2>
+  <!-- ══ GALLERY ══ -->
+  <section class="gallery-section" id="gallery">
+    <div class="gallery-section-head reveal">
+      <span class="tag">Our Work</span>
+      <h2>Every set, a <em>masterpiece</em></h2>
     </div>
-    <div class="gallery-strip">
-      <div class="gallery-track" id="galleryTrack"></div>
+    <div class="gallery-grid">
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Blush Ombré</span>Almond · Glossy</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Floral Stiletto</span>Deep Red · Star Art</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Gold Coffin</span>24K Foil · Matte</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Dark Glam</span>Coffin · Rhinestone</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Pearl Square</span>Soft White · Satin</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Holo Oval</span>Holographic · Chrome</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Nude Almond</span>Minimal · Elegant</div>
+      </div>
+      <div class="gc reveal">
+        <div class="gc-nail-display">
+          <div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div><div class="gc-nail"></div>
+        </div>
+        <div class="gc-label"><span>Berry Floral</span>Stiletto · 3D Art</div>
+      </div>
     </div>
   </section>
 
   <!-- ══ SERVICES ══ -->
-  <section class="services">
+  <section class="services" id="services">
     <div class="services-inner">
       <div class="section-header reveal">
         <span class="tag">What We Offer</span>
         <h2>Endless <em>possibilities</em></h2>
       </div>
       <div class="services-grid">
-        <div class="svc-card reveal"><div class="svc-icon">🌸</div><h3>Custom Shapes</h3><p>Almond, stiletto, coffin, square, oval — sculpted to flatter your hands perfectly.</p><div class="svc-price">Starting ₹299 / set</div></div>
-        <div class="svc-card reveal"><div class="svc-icon">🎨</div><h3>Colour Matching</h3><p>Any shade from dreamy nudes to vivid neons, matched precisely to your vision.</p><div class="svc-price">Any colour, any palette</div></div>
-        <div class="svc-card reveal"><div class="svc-icon">💎</div><h3>Embellishments</h3><p>Rhinestones, pearls, 24K gold foils, 3D florals, and hand-painted artistry.</p><div class="svc-price">Bespoke pricing</div></div>
-        <div class="svc-card reveal"><div class="svc-icon">✨</div><h3>Finish Options</h3><p>Glossy, matte, chrome, glitter, holographic, satin — every finish imaginable.</p><div class="svc-price">Included in all sets</div></div>
+        <div class="svc-card reveal">
+          <div class="svc-icon">🌸</div>
+          <h3>Custom Shapes</h3>
+          <p>Almond, stiletto, coffin, square, oval — sculpted to flatter your hands perfectly.</p>
+        </div>
+        <div class="svc-card reveal">
+          <div class="svc-icon">🎨</div>
+          <h3>Colour Matching</h3>
+          <p>Any shade from dreamy nudes to vivid neons, matched precisely to your vision.</p>
+        </div>
+        <div class="svc-card reveal">
+          <div class="svc-icon">💎</div>
+          <h3>Embellishments</h3>
+          <p>Rhinestones, pearls, 24K gold foils, 3D florals, and hand-painted artistry.</p>
+        </div>
+        <div class="svc-card reveal">
+          <div class="svc-icon">✨</div>
+          <h3>Finish Options</h3>
+          <p>Glossy, matte, chrome, glitter, holographic, satin — every finish imaginable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <section class="process" id="process">
+    <div class="process-inner">
+      <div class="section-header reveal" style="text-align:left;">
+        <span class="tag" style="display:block;margin-bottom:.8rem;">How It Works</span>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--dark);">From <em style="font-style:italic;color:var(--deep);">idea</em> to your door</h2>
+      </div>
+      <div class="process-steps">
+        <div class="ps reveal">
+          <div class="ps-num">1</div>
+          <h4>Place Your Order</h4>
+          <p>Fill out the form with your shape, finish, and design vision.</p>
+        </div>
+        <div class="ps reveal">
+          <div class="ps-num">2</div>
+          <h4>We Chat on WhatsApp</h4>
+          <p>We discuss your exact vision and share design previews with you.</p>
+        </div>
+        <div class="ps reveal">
+          <div class="ps-num">3</div>
+          <h4>Handcrafted for You</h4>
+          <p>Your set is lovingly made with premium materials and attention to detail.</p>
+        </div>
+        <div class="ps reveal">
+          <div class="ps-num">4</div>
+          <h4>Delivered to Your Door</h4>
+          <p>Beautifully packaged and shipped right to your home.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -419,60 +770,17 @@
       <div class="footer-brand">Sandy <em>Nails</em></div>
       <div class="footer-tagline">Custom Artificial Nails · Crafted with Love</div>
       <div class="footer-links">
-        <a href="#home">Home</a><a href="#gallery">Gallery</a>
-        <a href="#order">Order</a><a href="https://wa.me/917358473540">WhatsApp</a>
+        <a href="#home">Home</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#services">Services</a>
+        <a href="#order">Order</a>
+        <a href="https://wa.me/917358473540">WhatsApp</a>
       </div>
       <div class="footer-copy">© 2025 Sandy Nails. All rights reserved. 💅</div>
     </div>
   </footer>
 
   <script>
-    // ── Image data embedded ──
-    const SISTER_SRC = 'SISTER_PLACEHOLDER';
-    const NAIL_SRC   = 'NAIL_PLACEHOLDER';
-
-    // ── Set sister photo as hero background ──
-    const heroBg = document.getElementById('heroBg');
-    heroBg.style.backgroundImage = `url('${SISTER_SRC}')`;
-    heroBg.style.backgroundSize = 'cover';
-    heroBg.style.backgroundPosition = 'center top';
-
-    // ── About section sister photo ──
-    document.getElementById('aboutSisterImg').src = SISTER_SRC;
-
-    // ── Nail thumbnails in cluster ──
-    ['nt1','nt2','nt3','nt4'].forEach(id => {
-      document.getElementById(id).src = NAIL_SRC;
-    });
-
-    // ── Gallery cards with nail image ──
-    const galleryData = [
-      { label:'Brown Gold Branch', icon:'', cls:'gc1' },
-      { label:'Floral Stiletto',   icon:'🌸', cls:'gc2' },
-      { label:'Gold Coffin',       icon:'💛', cls:'gc3' },
-      { label:'Dark Glam',         icon:'🖤', cls:'gc4' },
-      { label:'Pearl Square',      icon:'🤍', cls:'gc5' },
-      { label:'Holo Oval',         icon:'🌈', cls:'gc6' },
-      { label:'Blush Almond',      icon:'🌷', cls:'gc1' },
-      { label:'Rhinestone Art',    icon:'💎', cls:'gc2' },
-    ];
-    const gtrack = document.getElementById('galleryTrack');
-    [...galleryData,...galleryData].forEach((d,i) => {
-      const c = document.createElement('div');
-      c.className = `gallery-card ${d.cls}`;
-      if (i % 4 === 0) {
-        // Show the real nail image for every 4th
-        const img = document.createElement('img');
-        img.src = NAIL_SRC;
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-        c.appendChild(img);
-      } else {
-        c.innerHTML = `<span class="gallery-nail-icon">${d.icon}</span>`;
-      }
-      c.innerHTML += `<div class="gallery-card-label">${d.label}</div>`;
-      gtrack.appendChild(c);
-    });
-
     // ── Ribbon ──
     const ribbonItems = ['💅 Custom Press-On Nails','✨ Premium Finishes','📦 Doorstep Delivery','💬 WhatsApp Support','🌸 Hand-Crafted Art','💎 Embellishments & Gems','🎨 Any Colour Imaginable','🌟 Made with Love'];
     const track = document.getElementById('ribbonTrack');
@@ -483,91 +791,10 @@
       track.appendChild(el);
     });
 
-    // ── FALLING NAILS CANVAS ANIMATION ──
-    const canvas = document.getElementById('fallingCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let W, H;
-    function resizeCanvas() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // Load nail image
-    const nailImg = new Image();
-    nailImg.src = NAIL_SRC;
-
-    // Nail particle class
-    class NailParticle {
-      constructor() { this.reset(true); }
-      reset(initial) {
-        this.x     = Math.random() * W;
-        this.y     = initial ? Math.random() * -H : -80;
-        this.size  = 28 + Math.random() * 36;
-        this.speed = 0.8 + Math.random() * 1.8;
-        this.rot   = Math.random() * Math.PI * 2;
-        this.rotSpd= (Math.random() - 0.5) * 0.04;
-        this.sway  = (Math.random() - 0.5) * 0.6;
-        this.swayT = Math.random() * Math.PI * 2;
-        this.alpha = 0.12 + Math.random() * 0.25;
-        // slight blur / glow tint
-        this.tint  = Math.random() > 0.5; // apply warm tint
-      }
-      update() {
-        this.swayT += 0.018;
-        this.x += Math.sin(this.swayT) * this.sway;
-        this.y += this.speed;
-        this.rot += this.rotSpd;
-        if (this.y > H + 100) this.reset(false);
-      }
-      draw() {
-        if (!nailImg.complete) return;
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rot);
-        const hw = this.size / 2;
-        const hh = (this.size * 1.3) / 2;
-        // Warm tint overlay
-        if (this.tint) {
-          ctx.filter = 'sepia(0.4) saturate(1.5) hue-rotate(-10deg)';
-        }
-        ctx.drawImage(nailImg, -hw, -hh, this.size, this.size * 1.3);
-        ctx.restore();
-      }
-    }
-
-    const particles = [];
-    for (let i = 0; i < 22; i++) particles.push(new NailParticle());
-
-    let animRunning = true;
-    function animate() {
-      if (!animRunning) return;
-      ctx.clearRect(0, 0, W, H);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animate);
-    }
-    nailImg.onload = animate;
-    animate(); // start even before load (will skip draw)
-
-    // Stop animation when hero scrolls out
-    const heroEl = document.getElementById('home');
-    const heroObserver = new IntersectionObserver(entries => {
-      animRunning = entries[0].isIntersecting;
-      if (animRunning) animate();
-    }, { threshold: 0 });
-    heroObserver.observe(heroEl);
-
-    // ── Parallax ──
+    // ── Nav scroll ──
+    const topNav = document.getElementById('topNav');
     window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (heroBg) heroBg.style.transform = `scale(1.05) translateY(${y * 0.35}px)`;
-      document.querySelectorAll('[data-parallax]').forEach(el => {
-        const speed = parseFloat(el.dataset.parallax);
-        el.style.transform = `translateY(${y * speed * -0.3}px)`;
-      });
+      topNav.classList.toggle('scrolled', window.scrollY > 60);
     });
 
     // ── Style pickers ──
@@ -618,13 +845,15 @@
     }
 
     // ── Cursor ──
-    const dot = document.getElementById('cursorDot');
+    const dot  = document.getElementById('cursorDot');
     const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0;
     document.addEventListener('mousemove', e => {
-      dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
-      setTimeout(() => { ring.style.left = e.clientX+'px'; ring.style.top = e.clientY+'px'; }, 60);
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx+'px'; dot.style.top = my+'px';
+      ring.style.left = mx+'px'; ring.style.top = my+'px';
     });
-    document.querySelectorAll('a,button,.style-pill,.gallery-card').forEach(el => {
+    document.querySelectorAll('a,button,.style-pill,.gc,.hero-nail-chip').forEach(el => {
       el.addEventListener('mouseenter', () => { ring.style.width='54px'; ring.style.height='54px'; ring.style.borderColor='rgba(196,112,106,.9)'; });
       el.addEventListener('mouseleave', () => { ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(196,112,106,.5)'; });
     });
@@ -632,8 +861,10 @@
     // ── Scroll reveal ──
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
     document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
